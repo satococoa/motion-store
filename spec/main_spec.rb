@@ -1,25 +1,10 @@
 describe "Application 'CoreDataStore'" do
 
-  class User < NSManagedObject
-    def self.entity
-      @entity ||= begin
-        entity = NSEntityDescription.new
-        entity.name = 'User'
-        entity.managedObjectClassName = 'User'
-        entity.properties = 
-          ['nickname', NSStringAttributeType,
-           'name', NSStringAttributeType].each_slice(2).map {|name, type|
-            property = NSAttributeDescription.new
-            property.name = name
-            property.attributeType = type
-            # property.optional = false
-            # property.defaultValue = 'hoge'
-            property
-          }
-        entity
-      end
-    end
-    include StoreModel
+  class User < StoreModel::Base
+    field :nickname, :string
+    field :name, :string
+    # 最後にregisterしたい
+    activate!
   end
 
   before do
