@@ -36,6 +36,28 @@ describe "Application 'CoreDataStore'" do
     }.should.raise(StoreModel::NoPropertyError)
   end
 
+  it "find specified object" do
+    3.times {|i| User.create(nickname: "user#{i}", name: "User #{i}", age: 20+i) }
+    user = User.find(['nickname == %@', 'user2'])[0]
+    user.name.should == 'User 2'
+    user2 = User.find(['name == %@', 'User 1'])[0]
+    user2.nickname.should == 'user1'
+  end
+
+  it "returns sorted data" do
+    3.times {|i| User.create(nickname: "user#{i}", name: "User #{i}", age: 20+i) }
+    users_in_desc = User.find(nil, [:age, :desc])
+    users_in_desc.map(&:age).should == [22, 21, 20]
+    users_in_asc = User.find(nil, [:age, :asc])
+    users_in_asc.map(&:age).should == [20, 21, 22]
+  end
+
+  it "update object" do
+    user = User.create(nickname: 'test_user', name: 'Test User', age: 20)
+    user.nickname = 'updated!'
+    User.find[0].nickname.should == 'updated!'
+  end
+
   it "fetch all objects" do
     3.times {|i| User.create(nickname: "user#{i}", name: "User #{i}", age: 20+i) }
 

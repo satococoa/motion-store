@@ -64,22 +64,48 @@ module StoreModel
       end
     end
 
+    def all
+      find
+    end
+
     def delete_all
       all.each do |data|
         data.remove
       end
     end
 
-    def all
-      # TODO: 重複だらけ。とりあえずコンソールでの確認用に実装。
-      request = NSFetchRequest.new
-      request.entity = NSEntityDescription.entityForName(self.to_s, inManagedObjectContext:Store.shared.context)
-      Store.shared.fetch(self.to_s, withFetchRequest:request)
+    def find(condition = nil, sort = nil)
+      request = NSFetchRequest.new.tap do |req|
+        req.entity = NSEntityDescription.entityForName(class_name, inManagedObjectContext:Store.shared.context)
+        unless condition.nil?
+          if condition.kind_of?(Array)
+            predicate = NSPredicate.predicateWithFormat(condition[0], argumentArray:condition[1..-1])
+          else
+            predicate = NSPredicate.predicateWithFormat(condition)
+          end
+          req.predicate = predicate
+        end
+        unless sort.nil?
+          if sort.kind_of?(Array)
+            key = sort[0].to_s
+            ascending = sort[1].to_sym == :desc ? false : true
+          else
+            key = sort.to_s
+            ascending = true
+          end
+          req.sortDescriptors = [NSSortDescriptor.sortDescriptorWithKey(key, ascending:ascending)]
+        end
+      end
+      Store.shared.fetch(class_name, withFetchRequest:request)
     end
   end
 
   class Base < NSManagedObject
     extend StoreModel::ClassMethods
+
+    def save
+      Store.shared.save
+    end
 
     def remove
       Store.shared.remove(self)
