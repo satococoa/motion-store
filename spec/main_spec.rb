@@ -74,6 +74,12 @@ describe "Application 'CoreDataStore'" do
     users[2].age.should == 22
   end
 
+  it "remove object" do
+    user = User.create(nickname: 'test_user', name: 'Test User', age: 20)
+    user.remove
+    User.all.count.should == 0
+  end
+
   it "delete all objects" do
     3.times {|i| User.create(nickname: "user#{i}", name: "User #{i}", age: 20+i) }
     Account.create(provider: 'github', username: 'testuser')
