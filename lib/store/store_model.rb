@@ -38,7 +38,10 @@ module StoreModel
 
     def field(name, type, *options)
       # TODO: オプションの実装
-      # optional, default, transient, index
+      #   optional, default, transient, index
+      #   created_atなどの動的なデフォルト値も設定できるようにしたい
+      # TODO: 関連の実装
+      #   関連オブジェクトを定義できるようにしたい
       (@properties ||= []) << NSAttributeDescription.new.tap do |prop|
         prop.name = name
         prop.attributeType = StoreModel::ATTR_TYPES[type]
