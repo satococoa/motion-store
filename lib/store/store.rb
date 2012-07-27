@@ -38,13 +38,13 @@ class Store
       inManagedObjectContext:@context
     )
     yield object
-    save
+    save # TODO: Is this proper to be here?
     object
   end
 
   def remove(object)
     @context.deleteObject(object)
-    save
+    save # TODO: Is this proper to be here?
   end
 
   def save
