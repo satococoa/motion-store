@@ -14,6 +14,9 @@ module StoreModel
     transform: NSTransformableAttributeType
   }
 
+  class NoPropertyError < StandardError
+  end
+
   module ClassMethods
     def class_name
       self.to_s
@@ -53,8 +56,10 @@ module StoreModel
 
     def create(attrs)
       Store.shared.add(class_name) do |data|
-        attrs.each do |k, v|
-          data.send(:"#{k}=", v)
+        props = data.entity.properties.map{|prop| prop.name}
+        attrs.each do |key, value|
+          raise StoreModel::NoPropertyError unless props.include?(key.to_s)
+          data.public_send(:"#{key}=", value)
         end
       end
     end
