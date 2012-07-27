@@ -1,10 +1,10 @@
 describe "Application 'CoreDataStore'" do
 
   class User < StoreModel::Base
-    field :nickname, :string
-    field :name, :string
-    # 最後にregisterしたい
-    activate!
+    fields do
+      string :nickname
+      string :name
+    end
   end
 
   before do

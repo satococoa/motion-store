@@ -24,6 +24,20 @@ module StoreModel
         self.to_s
       end
 
+      def method_missing(method, *args)
+        # TODO: define_methodがサポートされたらリファクタリング
+        unless ATTR_TYPES[method].nil?
+          field(args[0], method)
+        else
+          super
+        end
+      end
+
+      def fields
+        yield
+        activate!
+      end
+
       def field(name, type)
         # TODO: オプションの実装
         # optional, default, transient, index

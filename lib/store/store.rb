@@ -32,7 +32,6 @@ class Store
     @context = context
   end
 
-
   def add(model_name)
     object = NSEntityDescription.insertNewObjectForEntityForName(
       model_name,
