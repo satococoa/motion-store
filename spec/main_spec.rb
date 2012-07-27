@@ -55,6 +55,7 @@ describe "Application 'CoreDataStore'" do
   it "update object" do
     user = User.create(nickname: 'test_user', name: 'Test User', age: 20)
     user.nickname = 'updated!'
+    user.save
     User.find[0].nickname.should == 'updated!'
   end
 
