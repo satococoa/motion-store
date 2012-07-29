@@ -25,7 +25,7 @@ module StoreModel
     def method_missing(method, *args)
       # TODO: define_methodがサポートされたらリファクタリング
       unless StoreModel::ATTR_TYPES[method].nil?
-        field(args[0], method)
+        field(args[0], method, *args[1..-1])
       else
         super
       end
@@ -37,6 +37,7 @@ module StoreModel
     end
 
     def field(name, type, *options)
+      options = options[0]
       # TODO: オプションの実装
       #   optional, default, transient, index
       #   created_atなどの動的なデフォルト値も設定できるようにしたい
@@ -45,6 +46,7 @@ module StoreModel
       (@properties ||= []) << NSAttributeDescription.new.tap do |prop|
         prop.name = name
         prop.attributeType = StoreModel::ATTR_TYPES[type]
+        prop.defaultValue = options[:default] if !options.nil? && !options.empty? && !options[:default].nil?
       end
     end
 
@@ -57,13 +59,13 @@ module StoreModel
       Store.register(@entity)
     end
 
-    def create(attrs)
+    def create(attrs = nil)
       Store.shared.add(class_name) do |data|
         props = data.entity.properties.map{|prop| prop.name}
         attrs.each do |key, value|
           raise StoreModel::NoPropertyError unless props.include?(key.to_s)
           data.public_send(:"#{key}=", value)
-        end
+        end unless attrs.nil?
       end
     end
 

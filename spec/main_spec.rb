@@ -15,6 +15,13 @@ describe "Application 'CoreDataStore'" do
     end
   end
 
+  class Foo < StoreModel::Base
+    fields do
+      string :bar, default: 'baz'
+      int32 :hoge, default: 256
+    end
+  end
+
   after do
     User.delete_all
     Account.delete_all
@@ -90,6 +97,12 @@ describe "Application 'CoreDataStore'" do
     User.delete_all
     User.all.count.should == 0
     Account.all.count == 1
+  end
+
+  it "set default value" do
+    foo = Foo.create
+    foo.bar.should == 'baz'
+    foo.hoge.should == 256
   end
 
 end
