@@ -40,6 +40,7 @@ module StoreModel
       # TODO: オプションの実装
       #   optional, default, transient, index
       #   created_atなどの動的なデフォルト値も設定できるようにしたい
+      #     * default: lambda {} で宣言
       # TODO: 関連の実装
       #   関連オブジェクトを定義できるようにしたい
       options = options || {}
