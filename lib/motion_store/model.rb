@@ -86,29 +86,39 @@ module MotionStore
       end
 
       def find(condition = nil, sort = nil)
-        request = NSFetchRequest.new.tap do |req|
-          req.entity = NSEntityDescription.entityForName(class_name, inManagedObjectContext:Store.shared.context)
-          unless condition.nil?
-            if condition.kind_of?(Array)
-              predicate = NSPredicate.predicateWithFormat(condition[0], argumentArray:condition[1..-1])
-            else
-              predicate = NSPredicate.predicateWithFormat(condition)
-            end
-            req.predicate = predicate
-          end
-          unless sort.nil?
-            if sort.kind_of?(Array)
-              key = sort[0].to_s
-              ascending = sort[1].to_sym == :desc ? false : true
-            else
-              key = sort.to_s
-              ascending = true
-            end
-            req.sortDescriptors = [NSSortDescriptor.sortDescriptorWithKey(key, ascending:ascending)]
-          end
-        end
+        request = build_request(condition, sort)
         Store.shared.fetch(class_name, withFetchRequest:request)
       end
+
+      def count(condition = nil)
+        request = build_request(condition, nil)
+        Store.shared.count(class_name, withFetchRequest:request)
+      end
+
+      private
+        def build_request(condition, sort)
+          NSFetchRequest.new.tap do |req|
+            req.entity = NSEntityDescription.entityForName(class_name, inManagedObjectContext:Store.shared.context)
+            unless condition.nil?
+              if condition.kind_of?(Array)
+                predicate = NSPredicate.predicateWithFormat(condition[0], argumentArray:condition[1..-1])
+              else
+                predicate = NSPredicate.predicateWithFormat(condition)
+              end
+              req.predicate = predicate
+            end
+            unless sort.nil?
+              if sort.kind_of?(Array)
+                key = sort[0].to_s
+                ascending = sort[1].to_sym == :desc ? false : true
+              else
+                key = sort.to_s
+                ascending = true
+              end
+              req.sortDescriptors = [NSSortDescriptor.sortDescriptorWithKey(key, ascending:ascending)]
+            end
+          end
+        end
     end
   end
 

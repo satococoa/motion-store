@@ -65,5 +65,12 @@ module MotionStore
       raise "Error when fetching data: #{error_ptr[0].description}" if data.nil?
       data
     end
+
+    def count(model_name, withFetchRequest:fetch_request)
+      error_ptr = Pointer.new(:object)
+      data = @context.countFetchRequest(fetch_request, error:error_ptr)
+      raise "Error when fetching data: #{error_ptr[0].description}" if data.nil?
+      data
+    end
   end
 end
