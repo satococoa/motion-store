@@ -42,10 +42,11 @@ module StoreModel
       #   created_atなどの動的なデフォルト値も設定できるようにしたい
       # TODO: 関連の実装
       #   関連オブジェクトを定義できるようにしたい
+      options = options || {}
       (@properties ||= []) << NSAttributeDescription.new.tap do |prop|
         prop.name = name
         prop.attributeType = StoreModel::ATTR_TYPES[type]
-        prop.defaultValue = options[:default] if !options.nil? && !options.empty? && !options[:default].nil?
+        prop.defaultValue = options[:default] unless options[:default].nil?
       end
     end
 
