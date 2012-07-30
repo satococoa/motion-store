@@ -32,12 +32,10 @@ describe "MotionStore 'Relationship'" do
     user.name.should == 'Test User'
     user.age.should == 20
     user.address.should == address
-    user.address.country == 'Japan'
-    user.address.zip == '123-4567'
+    user.address.country.should == 'Japan'
+    user.address.zip.should == '123-4567'
     RelUser.count.should == 1
     RelAddress.count.should == 1
-
-    MotionStore::Store.shared.reset
   end
 
 end
