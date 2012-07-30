@@ -25,7 +25,7 @@ module StoreModel
     def method_missing(method, *args)
       # TODO: define_methodがサポートされたらリファクタリング
       unless StoreModel::ATTR_TYPES[method].nil?
-        field(args[0], method, *args[1..-1])
+        field(args[0], method, args[1])
       else
         super
       end
@@ -36,8 +36,7 @@ module StoreModel
       activate!
     end
 
-    def field(name, type, *options)
-      options = options[0]
+    def field(name, type, options)
       # TODO: オプションの実装
       #   optional, default, transient, index
       #   created_atなどの動的なデフォルト値も設定できるようにしたい
