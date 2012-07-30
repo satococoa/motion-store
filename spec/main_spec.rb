@@ -1,4 +1,4 @@
-describe "Application 'CoreDataStore'" do
+describe "MotionStore 'Model'" do
 
   class User < MotionStore::Model
     fields do
