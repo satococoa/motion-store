@@ -53,8 +53,8 @@ describe "MotionStore 'Model'" do
 
     user.nickname.should == 'test_user'
     user.name.should == 'Test User'
-    User.all.count.should == 1
-    Account.all.count.should == 1
+    User.count.should == 1
+    Account.count.should == 1
   end
 
   it "throw error when invalid parameter on initialize" do
@@ -105,18 +105,18 @@ describe "MotionStore 'Model'" do
   it "remove object" do
     user = User.create(nickname: 'test_user', name: 'Test User', age: 20)
     user.remove
-    User.all.count.should == 0
+    User.count.should == 0
   end
 
   it "delete all objects" do
     3.times {|i| User.create(nickname: "user#{i}", name: "User #{i}", age: 20+i) }
     Account.create(provider: 'github', username: 'testuser')
 
-    User.all.count.should == 3
-    Account.all.count == 1
+    User.count.should == 3
+    Account.count == 1
     User.delete_all
-    User.all.count.should == 0
-    Account.all.count == 1
+    User.count.should == 0
+    Account.count == 1
   end
 
   it "set default value" do
