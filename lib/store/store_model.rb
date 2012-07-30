@@ -47,6 +47,7 @@ module StoreModel
         prop.name = name
         prop.attributeType = StoreModel::ATTR_TYPES[type]
         prop.defaultValue = options[:default] unless options[:default].nil?
+        prop.indexed = options[:indexed] unless options[:indexed].nil?
       end
     end
 

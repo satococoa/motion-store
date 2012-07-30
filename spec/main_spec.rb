@@ -15,10 +15,11 @@ describe "Application 'CoreDataStore'" do
     end
   end
 
-  class Foo < StoreModel::Base
+  class Option < StoreModel::Base
     fields do
-      string :bar, default: 'baz'
-      int32 :hoge, default: 256
+      string :default_bar, default: 'bar'
+      int32 :default_256, default: 256
+      int64 :indexed_num, indexed: true, default: 512
     end
   end
 
@@ -100,9 +101,14 @@ describe "Application 'CoreDataStore'" do
   end
 
   it "set default value" do
-    foo = Foo.create
-    foo.bar.should == 'baz'
-    foo.hoge.should == 256
+    foo = Option.create
+    foo.default_bar.should == 'bar'
+    foo.default_256.should == 256
+  end
+
+  it "set indexed" do
+    foo = Option.create
+    foo.entity.propertiesByName[:indexed_num].indexed?.should == true
   end
 
 end
