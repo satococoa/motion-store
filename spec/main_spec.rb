@@ -31,14 +31,20 @@ describe "Application 'CoreDataStore'" do
     end
   end
 
+  class Checkin < MotionStore::Model
+    fields do
+      date :created_at, default: lambda { Time.new }
+    end
+  end
+
   before do
     MotionStore::Store.shared.reset
-    [User, Account, Option, Address].each{|klass| klass.delete_all }
+    [User, Account, Option, Address, Checkin].each{|klass| klass.delete_all }
   end
 
   after do
     MotionStore::Store.shared.reset
-    [User, Account, Option, Address].each{|klass| klass.delete_all }
+    [User, Account, Option, Address, Checkin].each{|klass| klass.delete_all }
   end
 
   it "create object" do
@@ -139,6 +145,19 @@ describe "Application 'CoreDataStore'" do
     lambda {
       Address.create
     }.should.raise(RuntimeError)
+  end
+
+  it "set dynamic default value" do
+    checkin = Checkin.create
+    checkin.created_at.should.not == nil
+    checkin.created_at.kind_of?(NSDate).should == true
+
+    checkin2 = Checkin.create(created_at: Time.mktime(2012, 7, 31, 15, 0))
+    checkin2.created_at.year.should == 2012
+    checkin2.created_at.month.should == 7
+    checkin2.created_at.day.should == 31
+    checkin2.created_at.hour.should == 15
+    checkin2.created_at.min.should == 0
   end
 
 end

@@ -37,7 +37,13 @@ module MotionStore
           prop.indexed = options[:indexed] unless options[:indexed].nil?
           prop.transient = options[:transient] unless options[:transient].nil?
           prop.optional = !options[:required] unless options[:required].nil?
-          prop.defaultValue = options[:default] unless options[:default].nil?
+          unless options[:default].nil?
+            if options[:default].respond_to?(:call)
+              prop.userInfo = {dynamicDefaultValue: options[:default]}
+            else
+              prop.defaultValue = options[:default]
+            end
+          end
         end
       end
 
@@ -52,11 +58,20 @@ module MotionStore
 
       def create(attrs = nil)
         Store.shared.add(class_name) do |data|
-          props = data.entity.properties.map{|prop| prop.name}
+          props = data.entity.properties
+          prop_names = props.map{|prop| prop.name}
           attrs.each do |key, value|
-            raise MotionStore::NoPropertyError unless props.include?(key.to_s)
+            raise MotionStore::NoPropertyError unless prop_names.include?(key.to_s)
             data.public_send(:"#{key}=", value)
           end unless attrs.nil?
+
+          # set dynamic default value
+          props.each do |prop|
+            dynamic = prop.userInfo[:dynamicDefaultValue]
+            if !dynamic.nil? && data.public_send(prop.name).nil?
+              data.public_send(:"#{prop.name}=", dynamic.call)
+            end
+          end
         end
       end
 
