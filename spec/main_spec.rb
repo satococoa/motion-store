@@ -20,6 +20,7 @@ describe "Application 'CoreDataStore'" do
       string :default_bar, default: 'bar'
       int32 :default_256, default: 256
       int64 :indexed_num, indexed: true, default: 512
+      string :transient, default: 'default_transient_val', transient: true
     end
   end
 
@@ -109,6 +110,16 @@ describe "Application 'CoreDataStore'" do
   it "set indexed" do
     foo = Option.create
     foo.entity.propertiesByName[:indexed_num].indexed?.should == true
+  end
+
+  it "set transient" do
+    foo = Option.create
+    foo.entity.propertiesByName[:transient].transient?.should == true
+    foo.transient.should == 'default_transient_val'
+    foo.transient = 'updated_transient_val'
+    foo.transient.should == 'updated_transient_val'
+    foo.save
+    Option.all.first.transient.should == 'default_transient_val'
   end
 
 end

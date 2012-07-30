@@ -49,6 +49,7 @@ module StoreModel
         prop.attributeType = StoreModel::ATTR_TYPES[type]
         prop.defaultValue = options[:default] unless options[:default].nil?
         prop.indexed = options[:indexed] unless options[:indexed].nil?
+        prop.transient = options[:transient] unless options[:transient].nil?
       end
     end
 
