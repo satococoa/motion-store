@@ -1,6 +1,6 @@
 describe "Application 'CoreDataStore'" do
 
-  class User < StoreModel::Base
+  class User < MotionStore::Model
     fields do
       string :nickname
       string :name
@@ -8,14 +8,14 @@ describe "Application 'CoreDataStore'" do
     end
   end
 
-  class Account < StoreModel::Base
+  class Account < MotionStore::Model
     fields do
       string :provider
       string :username
     end
   end
 
-  class Option < StoreModel::Base
+  class Option < MotionStore::Model
     fields do
       string :default_bar, default: 'bar'
       int32 :default_256, default: 256
@@ -42,7 +42,7 @@ describe "Application 'CoreDataStore'" do
   it "throw error when invalid parameter on initialize" do
     lambda {
       User.create(nickname: 'test_user', name: 'Test User', age: 20, hoge: 'hoge')
-    }.should.raise(StoreModel::NoPropertyError)
+    }.should.raise(MotionStore::NoPropertyError)
   end
 
   it "find specified object" do
