@@ -31,9 +31,14 @@ describe "Application 'CoreDataStore'" do
     end
   end
 
+  before do
+    MotionStore::Store.shared.reset
+    [User, Account, Option, Address].each{|klass| klass.delete_all }
+  end
+
   after do
-    User.delete_all
-    Account.delete_all
+    MotionStore::Store.shared.reset
+    [User, Account, Option, Address].each{|klass| klass.delete_all }
   end
 
   it "create object" do
@@ -126,6 +131,7 @@ describe "Application 'CoreDataStore'" do
     obj.transient = 'updated_transient_val'
     obj.transient.should == 'updated_transient_val'
     obj.save
+    MotionStore::Store.shared.reset
     Option.all.first.transient.should == 'default_transient_val'
   end
 
@@ -134,4 +140,5 @@ describe "Application 'CoreDataStore'" do
       Address.create
     }.should.raise(RuntimeError)
   end
+
 end

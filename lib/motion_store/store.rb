@@ -55,6 +55,10 @@ module MotionStore
       end
     end
 
+    def reset
+      @context.reset
+    end
+
     def fetch(model_name, withFetchRequest:fetch_request)
       error_ptr = Pointer.new(:object)
       data = @context.executeFetchRequest(fetch_request, error:error_ptr)

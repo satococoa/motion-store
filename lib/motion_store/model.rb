@@ -28,20 +28,16 @@ module MotionStore
       end
 
       def field(name, type, options)
-        # TODO: オプションの実装
-        #   optional, default, transient, index
-        #   created_atなどの動的なデフォルト値も設定できるようにしたい
-        #     * default: lambda {} で宣言
         # TODO: 関連の実装
         #   関連オブジェクトを定義できるようにしたい
         options = options || {}
         (@properties ||= []) << NSAttributeDescription.new.tap do |prop|
           prop.name = name
           prop.attributeType = MotionStore::ATTR_TYPES[type]
-          prop.defaultValue = options[:default] unless options[:default].nil?
           prop.indexed = options[:indexed] unless options[:indexed].nil?
           prop.transient = options[:transient] unless options[:transient].nil?
           prop.optional = !options[:required] unless options[:required].nil?
+          prop.defaultValue = options[:default] unless options[:default].nil?
         end
       end
 
