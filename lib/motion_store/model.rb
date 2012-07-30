@@ -41,6 +41,7 @@ module MotionStore
           prop.defaultValue = options[:default] unless options[:default].nil?
           prop.indexed = options[:indexed] unless options[:indexed].nil?
           prop.transient = options[:transient] unless options[:transient].nil?
+          prop.optional = !options[:required] unless options[:required].nil?
         end
       end
 

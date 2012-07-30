@@ -24,6 +24,13 @@ describe "Application 'CoreDataStore'" do
     end
   end
 
+  class Address < MotionStore::Model
+    fields do
+      string :zip, required: true
+      string :street
+    end
+  end
+
   after do
     User.delete_all
     Account.delete_all
@@ -122,4 +129,9 @@ describe "Application 'CoreDataStore'" do
     Option.all.first.transient.should == 'default_transient_val'
   end
 
+  it "set required" do
+    lambda {
+      Address.create
+    }.should.raise(RuntimeError)
+  end
 end
