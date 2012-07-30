@@ -9,6 +9,8 @@ module MotionStore
     end
 
     class << self
+      attr_reader :entity
+
       def class_name
         self.to_s
       end
@@ -18,7 +20,12 @@ module MotionStore
         unless MotionStore::ATTR_TYPES[method].nil?
           field(args[0], method, args[1])
         else
-          super
+          case method
+          when :relation
+            relation(args[0], args[1])
+          else
+            super
+          end
         end
       end
 
@@ -28,9 +35,7 @@ module MotionStore
       end
 
       def field(name, type, options)
-        # TODO: 関連の実装
-        #   関連オブジェクトを定義できるようにしたい
-        options = options || {}
+        options ||= {}
         (@properties ||= []) << NSAttributeDescription.new.tap do |prop|
           prop.name = name
           prop.attributeType = MotionStore::ATTR_TYPES[type]
@@ -44,6 +49,16 @@ module MotionStore
               prop.defaultValue = options[:default]
             end
           end
+        end
+      end
+
+      def relation(name, options)
+        options ||= {}
+        (@properties ||= []) << NSRelationshipDescription.new.tap do |prop|
+          prop.maxCount = 1
+          prop.name = name
+          prop.destinationEntity = const_get(options[:destination]).entity
+          prop.inverseRelationship = options[:inverse] unless options[:inverse].nil?
         end
       end
 
